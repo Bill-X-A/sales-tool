@@ -1,3 +1,4 @@
+from datetime import datetime, timezone, timedelta
 import os
 import re
 import json
@@ -178,7 +179,7 @@ if st.button("确认提交"):
         "购买品类": st.session_state.购买品类,
         "购买用途": usage,
         "会员等级": member,
-        "时间": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        "时间": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")
     }
     
     # 如果有图片，加入附件字段
@@ -194,7 +195,7 @@ if st.button("确认提交"):
 if st.button("查看历史记录"):
     records = get_from_feishu()
     if records:
-        today = datetime.now().strftime("%Y-%m-%d")
+        today = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")
         today_records = [r for r in records if str(r.get("时间", "")).startswith(today)]
         if today_records:
             df = pd.DataFrame(today_records)
