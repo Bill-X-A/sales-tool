@@ -1,5 +1,7 @@
 zhipuai
 httpx
+sniffio
 pandas
 openpyxl
-sniffio
+requests
+lark-oapi
