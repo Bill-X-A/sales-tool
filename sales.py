@@ -144,7 +144,10 @@ if st.button("AI识别"):
     clean = clean.replace('¥', '')
     result = json.loads(clean)
     st.session_state.销售员 = result.get("销售员", "")
-    st.session_state.手机号 = result.get("备注后面的11位数字", "")
+    phone = result.get("备注后面的11位数字", "")
+    if not (phone.isdigit() and len(phone) == 11):
+    phone = "13000000000"
+    st.session_state.手机号 = phone
     st.session_state.商品名称 = result.get("商品名称", "")
     st.session_state.SN码 = result.get("SN码", "")
     st.session_state.订单金额 = result.get("订单金额", "")
