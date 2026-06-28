@@ -85,8 +85,8 @@ def upload_image_to_feishu(image_bytes, filename):
 
 client = ZhipuAI(api_key=st.secrets["ZHIPU_API_KEY"])
 
-st.title("📋 销售录入助手
-Designed by Penghui Xie")
+st.title("📋 销售录入助手")
+st.title("Designed by Penghui Xie")
 
 uploaded_file = st.file_uploader("上传订单截图", type=["jpg", "jpeg", "png"])
 
