@@ -85,7 +85,8 @@ def upload_image_to_feishu(image_bytes, filename):
 
 client = ZhipuAI(api_key=st.secrets["ZHIPU_API_KEY"])
 
-st.title("📋 销售录入助手")
+st.title("📋 销售录入助手
+Designed by Penghui Xie")
 
 uploaded_file = st.file_uploader("上传订单截图", type=["jpg", "jpeg", "png"])
 
@@ -97,7 +98,7 @@ usage = st.selectbox("购买用途", usage_options)
 
 photo_file = st.file_uploader("上传三码合一照片", type=["jpg", "jpeg", "png"], key="photo")
 
-if st.button("AI识别"):
+if st.button("谢大王帮你识别"):
     image_data = base64.b64encode(uploaded_file.read()).decode("utf-8")
 
     response = client.chat.completions.create(
