@@ -88,8 +88,9 @@ client = ZhipuAI(api_key=st.secrets["ZHIPU_API_KEY"])
 st.title("📋 销售录入助手")
 
 uploaded_file = st.file_uploader("上传订单截图", type=["jpg", "jpeg", "png"])
-if uploaded_file:
-    st.image(uploaded_file, caption="订单截图预览", width=300)
+if st.button("订单截图预览"):
+    if uploaded_file:
+        st.image(uploaded_file, caption="订单截图预览", width=300)
 
 member_levels = ["V0", "V1", "V2", "V3", "V4", "V5"]
 member = st.selectbox("选择会员等级", member_levels, index=0)
