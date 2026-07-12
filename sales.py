@@ -160,23 +160,6 @@ if st.button("识别"):
     else:
         st.error("AI识别失败，请重新上传或手动填写")
         
-    # 解析JSON
-    raw = response.choices[0].message.content
-    clean = re.sub(r'```[\w]*', '', raw).strip()
-    clean = ''.join(char for char in clean if ord(char) < 65536)
-    clean = clean.replace('¥', '')
-    result = json.loads(clean)
-    st.session_state.销售员 = result.get("销售员", "")
-    phone = result.get("备注后面的11位数字", "")
-    if not (phone.isdigit() and len(phone) == 11):
-        phone = "13000000000"
-    st.session_state.手机号 = phone
-    st.session_state.商品名称 = result.get("商品名称", "")
-    st.session_state.SN码 = result.get("SN码", "")
-    st.session_state.订单金额 = result.get("订单金额", "")
-    st.session_state.购买品类 = result.get("购买品类", "")
-    st.session_state.show_fields = True
-
 if st.session_state.get("show_fields"):
     st.session_state.销售员 = st.text_input("销售员", st.session_state.销售员)
     st.session_state.手机号 = st.text_input("手机号", st.session_state.手机号)
