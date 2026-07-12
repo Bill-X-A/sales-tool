@@ -82,6 +82,30 @@ def upload_image_to_feishu(image_bytes, filename):
     else:
         st.error(f"图片上传失败：{res}")
         return None
+def recognize_order(image_data, prompt_text, retries=2):
+    for attempt in range(retries):
+        response = client.chat.completions.create(
+            model="glm-4v-flash",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_data}"}},
+                        {"type": "text", "text": prompt_text}
+                    ]
+                }
+            ]
+        )
+        raw = response.choices[0].message.content
+        clean = re.sub(r'```[\w]*', '', raw).strip()
+        clean = ''.join(char for char in clean if ord(char) < 65536)
+        clean = clean.replace('¥', '')
+        
+        try:
+            return json.loads(clean)
+        except json.JSONDecodeError:
+            if attempt == retries - 1:
+                return None
 
 client = ZhipuAI(api_key=st.secrets["ZHIPU_API_KEY"])
 
@@ -143,7 +167,22 @@ if st.button("识别"):
             }
         ]
     )
-
+    result = recognize_order(image_data, prompt)
+    
+    if result:
+        st.session_state.销售员 = result.get("销售员", "")
+        phone = result.get("备注后面的11位数字", "")
+        if not (phone.isdigit() and len(phone) == 11):
+            phone = "13000000000"
+        st.session_state.手机号 = phone
+        st.session_state.商品名称 = result.get("商品名称", "")
+        st.session_state.SN码 = result.get("SN码", "")
+        st.session_state.订单金额 = result.get("订单金额", "")
+        st.session_state.购买品类 = result.get("购买品类", "")
+        st.session_state.show_fields = True
+    else:
+        st.error("AI识别失败，请重新上传或手动填写")
+        
     # 解析JSON
     raw = response.choices[0].message.content
     clean = re.sub(r'```[\w]*', '', raw).strip()
