@@ -123,28 +123,9 @@ usage_options = ["国补", "自用拆封激活", "自用不激活", "送礼激�
 usage = st.selectbox("购买用途", usage_options)
 
 photo_file = st.file_uploader("上传三码合一照片", type=["jpg", "jpeg", "png"], key="photo")
-if st.button("三码合一照片预览"):
-    if photo_file:
-        st.image(photo_file, caption="三码合一照片预览", width=300)
-
 if st.button("识别"):
     image_data = base64.b64encode(uploaded_file.read()).decode("utf-8")
-
-    response = client.chat.completions.create(
-        model="glm-4v-flash",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": f"data:image/jpeg;base64,{image_data}"
-                        }
-                    },
-                    {
-                        "type": "text",
-                        "text": """请从这张销售单截图中提取以下信息，以JSON格式返回：
+    prompt = """请从这张销售单截图中提取以下信息，以JSON格式返回：
     {
         "销售员": "",
         "备注后面的11位数字": "只提取【备注】这一行后面的11位数字，不要提取【手机号】字段的数字，如果备注里没有11位数字则返回13000000000",
@@ -153,20 +134,16 @@ if st.button("识别"):
         "订单金额": "",
         "购买品类": ""
     }
-                        购买品类判断规则：
-                        - 商品名称包含"双卡" → "手机"
-                        - 商品名称包含"MateBook" → "PC"
-                        - 商品名称包含"MatePad" → "平板"
-                        - 商品名称包含"TV"或"智慧屏" → "智慧屏"
-                        - 商品名称包含"手表"或"手环"或"WATCH" → "穿戴"
-                        - 商品名称包含"耳机"或"Free" → "音频"
-                        - 其他 → "配件"
-                        只返回JSON，不要其他内容。"""
-                    }
-                ]
-            }
-        ]
-    )
+                购买品类判断规则：
+                - 商品名称包含"双卡" → "手机"
+                - 商品名称包含"MateBook" → "PC"
+                - 商品名称包含"MatePad" → "平板"
+                - 商品名称包含"TV"或"智慧屏" → "智慧屏"
+                - 商品名称包含"手表"或"手环"或"WATCH" → "穿戴"
+                - 商品名称包含"耳机"或"Free" → "音频"
+                - 其他 → "配件"
+                只返回JSON，不要其他内容。"""
+    
     result = recognize_order(image_data, prompt)
     
     if result:
