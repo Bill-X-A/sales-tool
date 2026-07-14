@@ -169,37 +169,39 @@ if st.session_state.get("show_fields"):
     st.session_state.购买品类 = st.text_input("购买品类", st.session_state.购买品类)
 
 if st.button("确认提交"):
-    # 先上传图片
-    file_token = None
-    if photo_file:
-        file_token = upload_image_to_feishu(
-            photo_file.read(),
-            photo_file.name
-        )
-    
-    # 准备提交数据
-    data = {
-        "标题": "销售记录",
-        "销售员": st.session_state.销售员,
-        "手机号": st.session_state.手机号,
-        "商品名称": st.session_state.商品名称,
-        "SN码": st.session_state.SN码,
-        "订单金额": st.session_state.订单金额,
-        "购买品类": st.session_state.购买品类,
-        "购买用途": usage,
-        "会员等级": member,
-        "时间": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")
-    }
-    
-    # 如果有图片，加入附件字段
-    if file_token:
-        data["三码合一照片"] = [{"file_token": file_token}]
-    
-    success = save_to_feishu(data)
-    if success:
-        st.success("提交成功！")
-    else:
-        st.error("提交失败，请重试")
+    with st.spinner("提交中,别点了"):
+        # 先上传图片
+        file_token = None
+        if photo_file:
+            file_token = upload_image_to_feishu(
+                photo_file.read(),
+                photo_file.name
+            )
+        
+        # 准备提交数据
+        data = {
+            "标题": "销售记录",
+            "销售员": st.session_state.销售员,
+            "手机号": st.session_state.手机号,
+            "商品名称": st.session_state.商品名称,
+            "SN码": st.session_state.SN码,
+            "订单金额": st.session_state.订单金额,
+            "购买品类": st.session_state.购买品类,
+            "购买用途": usage,
+            "会员等级": member,
+            "时间": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")
+        }
+        
+        # 如果有图片，加入附件字段
+        if file_token:
+            data["三码合一照片"] = [{"file_token": file_token}]
+        
+        success = save_to_feishu(data)
+        if success:
+            st.success("提交成功！")
+            st.session_state.show_fields = False
+        else:
+            st.error("提交失败，请重试")
 
 if st.button("查看历史记录"):
     records = get_from_feishu()
