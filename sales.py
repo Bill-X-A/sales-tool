@@ -202,10 +202,10 @@ if st.button("确认提交",disabled=submit_disabled):
         
         st.session_state.submitting = False
         if success:
-        st.success("提交成功！")
-        st.session_state.show_fields = False
-    else:
-        st.error("提交失败，请重试")
+            st.success("提交成功！")
+            st.session_state.show_fields = False
+        else:
+            st.error("提交失败，请重试")
 
 if st.button("查看历史记录"):
     records = get_from_feishu()
