@@ -168,12 +168,11 @@ if st.session_state.get("show_fields"):
     st.session_state.订单金额 = st.text_input("订单金额", st.session_state.订单金额)
     st.session_state.购买品类 = st.text_input("购买品类", st.session_state.购买品类)
 
-if st.button("确认提交"):
-    if st.session_state.get("submitting", False):
-        st.warning("正在提交中，请勿重复点击")
-    else:
-        st.session_state.submitting = True
-        with st.spinner("提交中，别点了"):
+submit_disabled = st.session_state.get("submitting", False)
+
+if st.button("确认提交",disabled=submit_disabled):
+    st.session_state.submitting = True
+    with st.spinner("提交中，别点了"):
             # 先上传图片
             file_token = None
             if photo_file:
@@ -203,14 +202,10 @@ if st.button("确认提交"):
         
         st.session_state.submitting = False
         if success:
-            st.session_state.submit_success = True
-            st.session_state.show_fields = False
-            st.rerun()
-        else:
-            st.error("提交失败，请重试")
-if st.session_state.get("submit_success", False):
-    st.success("提交成功！")
-    st.session_state.submit_success = False  # 显示一次后重置
+        st.success("提交成功！")
+        st.session_state.show_fields = False
+    else:
+        st.error("提交失败，请重试")
 
 if st.button("查看历史记录"):
     records = get_from_feishu()
