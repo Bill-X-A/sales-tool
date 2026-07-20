@@ -134,7 +134,9 @@ if st.button("识别"):
         "订单金额": "",
         "购买品类": ""
     }
-    
+
+                SN码判断规则：
+                - 是长度为16位字母和数字的组合
                 购买品类判断规则：
                 - 商品名称包含"双卡" → "手机"
                 - 商品名称包含"MateBook" → "PC"
@@ -154,7 +156,7 @@ if st.button("识别"):
             phone = "13000000000"
         st.session_state.手机号 = phone
         st.session_state.商品名称 = result.get("商品名称", "")
-        st.session_state.SN码 = result.get("SN码后面的16位字符", "")
+        st.session_state.SN码 = result.get("SN码", "")
         st.session_state.订单金额 = result.get("订单金额", "")
         st.session_state.购买品类 = result.get("购买品类", "")
         st.session_state.show_fields = True
