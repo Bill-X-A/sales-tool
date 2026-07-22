@@ -125,7 +125,7 @@ usage = st.selectbox("购买用途", usage_options)
 photo_file = st.file_uploader("上传三码合一照片", type=["jpg", "jpeg", "png"], key="photo")
 if st.button("识别"):
     image_data = base64.b64encode(uploaded_file.read()).decode("utf-8")
-    prompt = """请从这张销售单截图中提取以下信息，以JSON格式返回：
+    prompt = """请从这张销售单截图中提取以下信息，所有的商品都需要提取，以JSON格式返回：
     {
         "销售员": "",
         "备注后面的11位数字": "只提取【备注】这一行后面的11位数字，不要提取【手机号】字段的数字，如果备注里没有11位数字则返回13000000000",
@@ -136,9 +136,6 @@ if st.button("识别"):
         "购买品类": ""
     }
 
-                商品列表规则：
-                - 把订单里每一件商品都列成一个对象
-                - SN码原样提取
                 购买品类判断规则：
                 - 商品名称包含"双卡" → "手机"
                 - 商品名称包含"MateBook" → "PC"
