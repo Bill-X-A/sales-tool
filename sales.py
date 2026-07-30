@@ -127,6 +127,7 @@ if st.button("识别"):
     image_data = base64.b64encode(uploaded_file.read()).decode("utf-8")
     prompt = """请从这张销售单截图中提取以下信息，以JSON格式返回：
     {
+        "订单时间": "",
         "销售员": "",
         "备注后面的11位数字": "只提取【备注】这一行后面的11位数字，不要提取【手机号】字段的数字，如果备注里没有11位数字则返回13000000000",
         "SN码": "提取所有商品的SN码（不含礼品），多个SN码之间用逗号隔开",
@@ -149,6 +150,7 @@ if st.button("识别"):
     result = recognize_order(image_data, prompt)
     
     if result:
+        st.session_state.订单时间 = result.get("订单时间", "")
         st.session_state.销售员 = result.get("销售员", "")
         phone = result.get("备注后面的11位数字", "")
         if not (phone.isdigit() and len(phone) == 11):
@@ -163,6 +165,7 @@ if st.button("识别"):
         st.error("AI识别失败，请重新上传或手动填写")
         
 if st.session_state.get("show_fields"):
+    st.session_state.订单时间 = st.text_input("订单时间", st.session_state.订单时间)
     st.session_state.销售员 = st.text_input("销售员", st.session_state.销售员)
     st.session_state.手机号 = st.text_input("手机号", st.session_state.手机号)
     st.session_state.商品名称 = st.text_input("商品名称", st.session_state.商品名称)
@@ -188,6 +191,7 @@ if st.button("确认提交", disabled=submit_disabled):
         # 准备提交数据
         data = {
             "标题": "销售记录",
+            "订单时间": st.session_state.订单时间,
             "销售员": st.session_state.销售员,
             "手机号": st.session_state.手机号,
             "商品名称": st.session_state.商品名称,
