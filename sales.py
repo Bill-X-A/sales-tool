@@ -41,9 +41,13 @@ def get_from_feishu():
         .app_secret(APP_SECRET) \
         .build()
 
+    today = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
+    
     request = ListAppTableRecordRequest.builder() \
         .app_token(APP_TOKEN) \
         .table_id(TABLE_ID) \
+        .filter(f'CurrentValue.[时间].contains("{today}")') \
+        .page_size(200) \
         .build()
 
     response = client.bitable.v1.app_table_record.list(request)
@@ -219,15 +223,10 @@ if st.button("确认提交", disabled=submit_disabled):
 if st.button("查看历史记录"):
     records = get_from_feishu()
     if records:
-        today = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
-        today_records = [r for r in records if str(r.get("时间", "")).startswith(today)]
-        if today_records:
-            df = pd.DataFrame(today_records)
-            st.dataframe(df)
-        else:
-            st.info("今天暂无记录")
+        df = pd.DataFrame(records)
+        st.dataframe(df)
     else:
-        st.info("暂无历史记录")
+        st.info("今天暂无记录")
         
         # 筛选今天的记录
         today = datetime.now().strftime("%Y-%m-%d")
