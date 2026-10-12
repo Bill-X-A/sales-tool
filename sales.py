@@ -123,7 +123,7 @@ if st.button("订单截图预览"):
 member_levels = ["V0", "V1", "V2", "V3", "V4", "V5"]
 member = st.selectbox("选择会员等级", member_levels, index=0)
 
-usage_options = ["国补", "自用拆封激活", "自用不激活", "送礼激活", "送礼不激活","即时零售", "其他"]
+usage_options = ["自用拆封激活", "国补", "自用不激活", "送礼激活", "送礼不激活","即时零售", "其他"]
 usage = st.selectbox("购买用途", usage_options)
 
 photo_file = st.file_uploader("上传三码合一照片", type=["jpg", "jpeg", "png"], key="photo")
